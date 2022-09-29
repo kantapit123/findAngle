@@ -7,17 +7,27 @@
 import imghdr
 from tkinter import *
 from tkinter import filedialog
+from turtle import onclick
 from typing_extensions import Self
 import cv2
 import math
+# importing all files  from tkinter
+from doctest import master
+from tkinter import ttk
+  
+# import only asksaveasfile from filedialog
+# which is used to save file in any extension
+from tkinter.filedialog import asksaveasfile,askdirectory,SaveAs, asksaveasfilename
+#from popup import mainWindow
+
 # Function for opening the
 # file explorer window
 #C:\Users\watch\OneDrive - Suranaree University of Technology\Plz learnCode\findAngle
 def cal(filename):
     img = cv2.imread(filename)
+    save_img = img
     pointsList = []
     intersection_point = []
-
     def mousePoints(event,x,y,flags,params):
         if event == cv2.EVENT_LBUTTONDOWN:
             size = len(pointsList)
@@ -33,8 +43,8 @@ def cal(filename):
                 line2 = [pointsList[2],pointsList[3]]
                 intersection_point.append(line_intersection(line1,line2))
                 cv2.circle(img,intersection_point[0],5, (0,0,255), cv2.FILLED)
-                print(intersection_point)
-            print(pointsList)
+                #print(intersection_point)
+            #print(pointsList)
 
     def line_intersection(line1, line2):
         xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
@@ -86,20 +96,69 @@ def cal(filename):
         #print(pt1, pt2, pt3)
         #print("angle")
 
-    #main in cal
+    def askSavemainWindow(object, file):
+        # root = Tk()
+        # root.title('Do you want to save the process?')
+        # root.geometry("400x100+500+250")
+        root = object
 
+        btn1 = ttk.Button(root, text = 'Save', command = lambda : save(root, file))
+        btn1.pack(padx=30, pady=10, side= LEFT)
+
+        btn2= ttk.Button(root,text="Don't save", command = lambda : dontSave(root))
+        btn2.pack(padx=30, pady=10, side= LEFT)
+
+        btn3 = ttk.Button(root,text="Cancel", command = lambda : cancel(root))
+        btn3.pack(padx=30, pady=10, side= LEFT)
+        # root.mainloop()
+    def save(object, save_img):
+        root = object
+        files = [('JPG', '*.jpg'),
+                ('PNG', '*.png'),
+                ('All Files', '*.*'),]
+                #  ('Python Files', '*.py'),
+                #  ('Text Document', '*.txt'),
+        file = asksaveasfilename(filetypes = files, defaultextension = files, )
+        #print(file)
+        cv2.imwrite(file,save_img)
+        cv2.destroyAllWindows()
+        root.destroy()
+    def dontSave(object):
+        root = object
+        root.destroy()
+        cv2.destroyAllWindows()
+
+    def cancel(object):
+        root = object
+        root.destroy()
+
+    #main in cal
     while True:
         if len(pointsList) % 4 == 0 and len(pointsList) != 0:
             getAngle(pointsList, intersection_point)
+        if len(pointsList) > 4:
+            pointsList = []
+            intersection_point = []
+            img = cv2.imread(filename)
         cv2.imshow('Image',img)
         cv2.setMouseCallback('Image',mousePoints)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             pointsList = []
             intersection_point = []
             img = cv2.imread(filename)
-        if cv2.waitKey(1) & 0xFF == 27: #ESC
+        if cv2.waitKey(1) & 0xFF == ord('s'): #safe
             cv2.destroyAllWindows()
             break;
+        if cv2.waitKey(1) & 0xFF == 27: #ESC
+            #ask2SavePopUp()
+            #cv2.imwrite('/path/to/destination/image.png',image)
+            root = Tk()
+            root.title('Do you want to save the process?')
+            root.geometry("400x100+500+250")
+            save_img = img
+            askSavemainWindow(root, save_img)
+            root.mainloop()
+
 
 def openFile():
     filename = filedialog.askopenfilename(title = "Select a File",filetypes = (("all files","*.*"),("Text files","*.txt*")))
@@ -137,6 +196,7 @@ button_explore = Button(window,
 button_exit = Button(window,
                      text = "Exit",
                      command = exit)
+  
   
 # Grid method is chosen for placing
 # the widgets at respective positions
