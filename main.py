@@ -18,13 +18,21 @@ from tkinter import ttk
 # import only asksaveasfile from filedialog
 # which is used to save file in any extension
 from tkinter.filedialog import asksaveasfile,askdirectory,SaveAs, asksaveasfilename
+
+from cv2 import imread
 #from popup import mainWindow
 
 # Function for opening the
 # file explorer window
 #C:\Users\watch\OneDrive - Suranaree University of Technology\Plz learnCode\findAngle
+
 def cal(filename):
     img = cv2.imread(filename)
+    
+    #dsize = (int(img.shape[1] * 80 / 100),int(img.shape[0] * 80 / 100))
+    dsize = (1080, 972)
+    img_resize = cv2.resize(img, dsize)
+    img = img_resize
     save_img = img
     pointsList = []
     intersection_point = []
@@ -68,8 +76,12 @@ def cal(filename):
         m2 = gradient(pt3, pt4)
         y1 = round(((m1*(pt1[0] - 0) - pt1[1]))*(-1))
         y2 = round(((m2*(pt3[0] - 0) - pt3[1]))*(-1))
-        ptf1 = (0,y1)
-        ptf2 = (0,y2)
+        y3 = round(((m1*(1080 - pt1[0]) + pt1[1])))
+        y4 = round(((m2*(1080 - pt3[0]) + pt3[1])))
+        ptf1 = (0, y1)
+        ptf2 = (0, y2)
+        ptf3 = (1080, y3)
+        ptf4 = (1080, y4)
         # m2 = gradient(pt1, pt2)# pt1 to pt2
         # angR = math.atan((m2-m1)/(1+m2*m1))
         # angD = round(math.degrees(angR))
@@ -78,6 +90,8 @@ def cal(filename):
         cv2.line(img,pt1,pt2,(0,255,0),2)
         cv2.line(img,pt3,ptf2,(0,255,0),2)
         cv2.line(img,pt3,pt4,(0,255,0),2)
+        cv2.line(img,pt2,ptf3,(0,255,0),2)
+        cv2.line(img,pt4,ptf4,(0,255,0),2)
 
     def gradient(pt1, pt2):
         return (pt2[1]-pt1[1])/(pt2[0]-pt1[0])
@@ -132,6 +146,10 @@ def cal(filename):
         root = object
         root.destroy()
 
+    def resize_img(src):
+        dsize = (int(src.shape[1] * 80 / 100),int(src.shape[0] * 80 / 100))
+        img_resize = cv2.resize(src, dsize)
+        return img_resize
     #main in cal
     while True:
         if len(pointsList) % 4 == 0 and len(pointsList) != 0:
@@ -139,13 +157,16 @@ def cal(filename):
         if len(pointsList) > 4:
             pointsList = []
             intersection_point = []
-            img = cv2.imread(filename)
+            #img = img_resize
+            img = resize_img(cv2.imread(filename))
+            
         cv2.imshow('Image',img)
         cv2.setMouseCallback('Image',mousePoints)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             pointsList = []
             intersection_point = []
-            img = cv2.imread(filename)
+            img = resize_img(cv2.imread(filename))
+            #img = cv2.resize(img, dsize)
         if cv2.waitKey(1) & 0xFF == ord('s'): #safe
             cv2.destroyAllWindows()
             break;
