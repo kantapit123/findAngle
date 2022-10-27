@@ -4,22 +4,19 @@
 # import all components
 # from the tkinter library
 #from fileinput import filename
-import imghdr
 from tkinter import *
 from tkinter import filedialog
-from turtle import onclick
-from typing_extensions import Self
 import cv2
 import math
 # importing all files  from tkinter
-from doctest import master
+#from doctest import master
 from tkinter import ttk
   
 # import only asksaveasfile from filedialog
 # which is used to save file in any extension
 from tkinter.filedialog import asksaveasfile,askdirectory,SaveAs, asksaveasfilename
 
-from cv2 import imread
+#from cv2 import imread
 #from popup import mainWindow
 
 # Function for opening the
@@ -103,7 +100,7 @@ def cal(filename):
         m1 = gradient(pt1, pt2)
         m2 = gradient(pt1, pt3)
         angR = math.atan((m2-m1)/(1+m2*m1))
-        angD = round(math.degrees(angR))
+        angD = abs(round(math.degrees(angR)))
         #print(angD)
         cv2.putText(img, str(angD),(pt1[0]-40,pt1[1]-20), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0,0,255),2)
         #print(m1, m2 ,angR, angD)
@@ -192,6 +189,9 @@ def openFile():
     else:
         label_file_explorer.configure(text="Please Select a File")
 
+def aboProgram():
+    pass
+
 #main
 # Create the root window
 window = Tk()
@@ -213,6 +213,10 @@ label_file_explorer = Label(window,
 button_explore = Button(window,
                         text = "Open Files",
                         command = openFile)
+
+button_abo = Button(window,
+                        text = "ABO analysis",
+                        command = aboProgram)
   
 button_exit = Button(window,
                      text = "Exit",
@@ -225,6 +229,7 @@ button_exit = Button(window,
 # specifying rows and columns
 label_file_explorer.grid(column = 1, row = 1)
 button_explore.grid(column = 1, row = 2)
-button_exit.grid(column = 1,row = 3)
+button_abo.grid(column = 1, row = 3)
+button_exit.grid(column = 1,row = 4)
 # Let the window wait for any events
 window.mainloop()
