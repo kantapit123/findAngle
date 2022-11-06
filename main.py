@@ -11,7 +11,7 @@ import math
 # importing all files  from tkinter
 #from doctest import master
 from tkinter import ttk
-  
+import New_ABO
 # import only asksaveasfile from filedialog
 # which is used to save file in any extension
 from tkinter.filedialog import asksaveasfile,askdirectory,SaveAs, asksaveasfilename
@@ -190,7 +190,10 @@ def openFile():
         label_file_explorer.configure(text="Please Select a File")
 
 def aboProgram():
-    pass
+    New_ABO.abo_main()
+
+def close():
+    window.quit()
 
 #main
 # Create the root window
@@ -220,7 +223,7 @@ button_abo = Button(window,
   
 button_exit = Button(window,
                      text = "Exit",
-                     command = exit)
+                     command = close)
   
   
 # Grid method is chosen for placing
